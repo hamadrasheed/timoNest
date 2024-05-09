@@ -1,7 +1,9 @@
-import { Module } from '@nestjs/common';
+import { Module, NestModule, RequestMethod, MiddlewareConsumer } from '@nestjs/common';
 import { UserModule } from './api/user/user.module';
 import { SequelizeModule } from '@nestjs/sequelize';
+import * as cors from 'cors';
 import { models } from './models';
+import { authenticate } from './middlewares/authenticate';
 
 import * as dotenv from 'dotenv';
 dotenv.config({ path: '.env' });
@@ -21,4 +23,16 @@ dotenv.config({ path: '.env' });
     UserModule
   ],
 })
-export class AppModule {};
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(cors(), authenticate)
+      .exclude(
+        { path: 'user/login', method: RequestMethod.POST},
+        { path: 'user/sign-up', method: RequestMethod.POST},
+      )
+      .forRoutes({
+        path: '*', method: RequestMethod.ALL
+      });
+  }
+};

@@ -4,6 +4,7 @@ import * as dotenv from 'dotenv';
 import { ValidationPipe } from '@nestjs/common';
 import * as httpLogs from 'morgan';
 import helmet from 'helmet';
+import { AllExceptionsFilter } from './middlewares/errorHandler';
 
 dotenv.config({ path: '.env' });
 
@@ -18,7 +19,7 @@ async function bootstrap() {
   app.use(helmet());
   app.enableCors();
 
-
+  app.useGlobalFilters(new AllExceptionsFilter());
   await app.listen(port);
 }
 bootstrap();

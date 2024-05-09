@@ -1,5 +1,3 @@
-
-
 export class Helper  {
 
     protected deleteAttributes = <K, T>(keys: K[], obj: T): T => {
