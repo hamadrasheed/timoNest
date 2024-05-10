@@ -2,12 +2,15 @@ import { UserService } from './user.service';
 import { Body, Controller, Next, Post, Req, Res, Put } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
 import { SignInDto, SignUpDto, ResetPasswordDto } from 'src/dto/users/user.dto';
+import { ApiCreatedResponse, ApiOkResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 
-
+@ApiTags('User')
 @Controller('user')
 export class UserController {
   public constructor(private readonly userService: UserService) {}
 
+  @ApiOkResponse({ description: 'The resource will sign in user.' })
+  @ApiUnauthorizedResponse({  description: 'Auth Failed' })
   @Post('login')
   public async signIn(@Req() req: Request, @Res() res: Response, @Next() next: NextFunction, @Body() body: SignInDto) {
 
