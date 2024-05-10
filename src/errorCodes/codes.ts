@@ -1,7 +1,6 @@
 export const statuses = {
-    INVALID: 406,
-    RADIUS: 1000,
     SUCCESS: 200,
+    INVALID: 406,
     UNAUTHORIZED: 401,
     UNKOWN: 404,
 };
@@ -34,5 +33,13 @@ export const responses = {
     TOKEN_BLACKLISTED: {
         message: 'The token has been blacklisted',
         status: statuses.UNAUTHORIZED
-    }
+    },
+    INVALID_ROLE: {
+        message: 'Unkown role is provided!',
+        status: statuses.INVALID
+    },
+    UNKOWN_USER: {
+        message: 'User not found!',
+        status: statuses.INVALID
+    },
 };

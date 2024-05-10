@@ -15,9 +15,9 @@ export class SignUpDto {
     @IsStrongPassword()
     public password: string;
 
-    @IsNumber()
+    @IsString()
     @IsNotEmpty()
-    public roleId: number;
+    public roleSlug: string;
 }
 
 export class SignInDto {
@@ -33,4 +33,20 @@ export class SignInDto {
     @IsString()
     @IsNotEmpty()
     public roleSlug: string;
+}
+
+export class ResetPasswordDto {
+
+    @IsString()
+    @IsNotEmpty()
+    @IsStrongPassword()
+    public oldPassword: string;
+    
+    @IsString()
+    @IsNotEmpty()
+    @IsStrongPassword()
+    public newPassword: string;
+
+    public userId?: number;
+
 }

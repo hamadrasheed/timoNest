@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { SignUpDto, SignInDto } from 'src/dto/users/user.dto';
+import { SignUpDto, SignInDto, ResetPasswordDto } from 'src/dto/users/user.dto';
 import * as  bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
 import { generateMessages } from 'src/utils/generateMessage';
@@ -12,6 +12,7 @@ export class UserService extends Helper {
 
     constructor(
       @InjectModel(models.users) private readonly userRepo: typeof models.users,
+      @InjectModel(models.roles) private readonly roleRepo: typeof models.roles,
     ) {
         super()
     }
@@ -23,7 +24,7 @@ export class UserService extends Helper {
                 userName,
                 email,
                 password,
-                roleId,
+                roleSlug,
             } = data;
     
             const doesEmailExits: models.usersI = this.shallowCopy(await this.userRepo.findOne(
@@ -31,7 +32,8 @@ export class UserService extends Helper {
                     where: {
                         email: email,
                         deletedAt: null
-                    }
+                    },
+                    attributes: ['id']
                 }
             ));
 
@@ -39,40 +41,33 @@ export class UserService extends Helper {
                 throw generateMessages('EMAIL_EXISTS');
             }
 
+            const roles: models.rolesI = this.shallowCopy(await this.roleRepo.findOne(
+                {
+                    where: {
+                        slug: roleSlug,
+                        deletedAt: null
+                    },
+                    attributes: ['id']
+                }
+            ));
+
+            if (!roles || !Object.keys(roles).length) {
+                throw generateMessages('INVALID_ROLE');
+            }
+
             const bcryptPassword: string = await bcrypt.hash(password, 1);
     
-            const newUser = this.shallowCopy(await this.userRepo.create(
+            await this.userRepo.create(
                 {
                     email,
                     userName,
                     password: bcryptPassword,
-                    roleId,
-                    roleSlug: 'admin', // will get this after query from DB for table of admin once admin table is created
-                }
-            ));
-
-            const secretKey: string = process.env.JWT_SECRET_KEY;
-
-            const userToken: string = jwt.sign(
-                {
-                    id: newUser.id,
-                },
-                secretKey,
-                {
-                    expiresIn: '24h',
+                    roleId: roles.id,
+                    roleSlug: roleSlug
                 }
             );
 
-            delete newUser.password;
-
-            const response = {
-                ...newUser,
-                  token: userToken
-            };
-
-            return {
-                ...response
-            };
+            return 'User created successfully!'
 
         } catch (error) {
             throw error
@@ -131,6 +126,48 @@ export class UserService extends Helper {
             return {
                 ...response
             };
+
+        } catch (error) {
+            throw error;
+        }
+
+    }
+
+    public resetPassword = async (data: ResetPasswordDto) => {
+        try {
+
+            const {
+                userId,
+                oldPassword,
+                newPassword,
+            } = data;
+
+            const signInUser: models.usersI = this.shallowCopy(await this.userRepo.findByPk(userId, {
+                attributes: ['id', 'password']
+            }));
+
+            if (!signInUser || !Object.keys(signInUser).length) {
+                throw generateMessages('UNKOWN_USER');
+            }
+
+            const { password: passwordFromDB } = signInUser;
+
+            const bcryptedPassword: boolean = await bcrypt.compare(oldPassword, passwordFromDB);
+
+            if (!bcryptedPassword) {
+                throw generateMessages('WRONG_PASSWORD');
+            }
+
+            await this.userRepo.update(
+                {
+                    password: newPassword
+                },
+                {
+                    where: { id: userId }
+                }
+            );
+
+            return `User's password updated successfully!`;
 
         } catch (error) {
             throw error;

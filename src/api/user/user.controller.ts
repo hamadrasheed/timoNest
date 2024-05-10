@@ -1,7 +1,7 @@
 import { UserService } from './user.service';
-import { Body, Controller, Next, Post, Req, Res } from '@nestjs/common';
+import { Body, Controller, Next, Post, Req, Res, Put } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
-import { SignInDto, SignUpDto } from 'src/dto/users/user.dto';
+import { SignInDto, SignUpDto, ResetPasswordDto } from 'src/dto/users/user.dto';
 
 
 @Controller('user')
@@ -32,6 +32,26 @@ export class UserController {
     try {
 
       const response = await this.userService.signUp({ ...body });
+
+      return res.status(200).json({
+          message: 'success',
+          result: response,
+      });
+
+    } catch (error) {
+      console.log(error);
+      return res.status(error.status || 500).json({
+        message: error.message || error.name || error,
+      });
+    }
+  }
+
+  @Put('reset-password')
+  public async resetPassword(@Req() req: Request, @Res() res: Response, @Next() next: NextFunction, @Body() body: ResetPasswordDto) {
+
+    try {
+
+      const response = await this.userService.resetPassword({ ...body });
 
       return res.status(200).json({
           message: 'success',
