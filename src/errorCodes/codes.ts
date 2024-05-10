@@ -10,6 +10,10 @@ export const responses = {
         message: 'Auth failed',
         status: statuses.INVALID
     },
+    USERNAME_NOT_FOUND: {
+        message: 'No user exists with this username!',
+        status: statuses.INVALID
+    },
     EMAIL_NOT_FOUND: {
         message: 'User not found with this email!',
         status: statuses.INVALID

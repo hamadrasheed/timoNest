@@ -25,12 +25,12 @@ export class SignUpDto {
 export class SignInDto {
 
     @ApiProperty({
-        example: 'test@gmail.com',
+        example: 'testUser',
         required: true
     })
-    @IsEmail()
+    @IsString()
     @IsNotEmpty()
-    public email: string;
+    public userName: string;
 
     @ApiProperty({
         example: 'Ab@12345',

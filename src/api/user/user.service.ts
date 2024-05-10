@@ -79,7 +79,7 @@ export class UserService extends Helper {
         try {
 
             const {
-                email,
+                userName,
                 password,
                 roleSlug,
             } = data;
@@ -87,13 +87,13 @@ export class UserService extends Helper {
             const signInUser: models.usersI = this.shallowCopy(await this.userRepo.findOne(
                 { 
                     where: {
-                        email: email,
+                        userName,
                         roleSlug
                     }
                 }));
             
             if (!signInUser || !Object.keys(signInUser).length) {
-                throw generateMessages('EMAIL_NOT_FOUND');
+                throw generateMessages('USERNAME_NOT_FOUND');
             }
             
             const { password: userPassword } = signInUser;
