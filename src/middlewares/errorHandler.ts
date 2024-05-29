@@ -1,5 +1,5 @@
-import { Catch, ArgumentsHost, HttpException, HttpStatus, ExceptionFilter } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Catch, ArgumentsHost, ExceptionFilter } from '@nestjs/common';
+import { Response } from 'express';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -7,12 +7,18 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
-    // const request = ctx.getRequest<Request>();
 
+    const errorResponse = {
+      statusCode: exception?.status || 406,
+      message: exception?.response?.message ? exception?.response?.message : exception?.parent?.sqlMessage || exception?.message || 'Internal Server Error',
+      exception
+    };
 
-    response.status(exception.status || 406).json({
-      statusCode: exception.status,
-      message: exception.message || 'Internal Server Error',
-    });
+    delete errorResponse.exception;
+
+    response.status(exception.status || 406).json(errorResponse);
+    
+    return;
+
   }
 }

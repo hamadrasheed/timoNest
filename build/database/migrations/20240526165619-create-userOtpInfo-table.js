@@ -1,9 +1,8 @@
 'use strict';
 
-/** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
-    return queryInterface.createTable('users', {
+  up: async (queryInterface, Sequelize) => {
+    return queryInterface.createTable('userOtpInfo', {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -11,23 +10,22 @@ module.exports = {
         unique: true,
         primaryKey: true,
       },
-      userName: {
-        type: Sequelize.STRING,
-        allowNull: false
+      userId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'users', 
+          key: 'id',      
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
+        allowNull: true
       },
-      email: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-      password: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-      roleId: {
+      otp: {
         type: Sequelize.INTEGER,
         allowNull: false
       },
-      roleSlug: {
+      otpType: {
         type: Sequelize.STRING,
         allowNull: false
       },
@@ -49,7 +47,7 @@ module.exports = {
     });
   },
 
-  async down (queryInterface, Sequelize) {
-    return queryInterface.dropTable('users');
+  down: async (queryInterface, Sequelize) => {
+    return queryInterface.dropTable('userOtpInfo');
   }
 };

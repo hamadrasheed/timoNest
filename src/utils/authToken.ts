@@ -16,7 +16,23 @@ export const authenticateToken = (authorizationToken: string): number => {
         }
   
         const token: string = tokenParse[1];
-        const decodedToken = jwt.verify(token, process.env.JWT_SECRET_KEY);
+       
+        let decodedToken: string | jwt.JwtPayload;
+
+        try {
+          decodedToken = jwt.verify(token, process.env.JWT_SECRET_KEY);
+        } catch (error) {
+          if (error?.message == 'jwt expired') {
+            throw generateMessages('TOKEN_BLACKLISTED');
+          }
+          throw generateMessages('UNAUTHORIZED_TOKEN');
+        }
+  
+
+        if (typeof decodedToken === 'string') {
+            throw generateMessages('TOKEN_INVALID');
+        }
+        
         const currentDate: number = new Date().getTime()/1000;
 
         if (currentDate > decodedToken.exp) {
@@ -26,6 +42,6 @@ export const authenticateToken = (authorizationToken: string): number => {
         return decodedToken.id;
 
     } catch (error) {
-        throw error;
+      throw error;
     }
 }

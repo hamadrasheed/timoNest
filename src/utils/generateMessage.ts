@@ -4,8 +4,9 @@ import { responses } from '../errorCodes/codes';
 
 dotenv.config({ path: '.env' });
 
-interface GenerateMsgI {
-    [key: string]: number | string;
+export interface GenerateMsgI {
+    message: string;
+    status: number;
 }
 
 /**

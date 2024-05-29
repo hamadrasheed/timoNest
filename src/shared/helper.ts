@@ -34,4 +34,25 @@ export class Helper  {
 
     protected sort = <T, Y>(items: T[], attribute: Y): T[] => items.sort((a: T, b: T): number =>  a[`${String(attribute)}`] - b[`${String(attribute)}`]);
 
+    protected generateFourDigitRandomNumber = (): number => Math.floor(1000 + Math.random() * 9000); // generates a 4 digit random code, 4321
+
+    protected formatFourDigitRandomNumber = (number: number): string => number.toString().split('').join('-'); // format otp like 4-3-2-1
+ 
+    // Validate is date is old in minutes given in second params
+    protected validateDateIsOld = (date: Date, number: number): boolean => {
+        const givenDate: Date = new Date(date);
+        const currentDate: Date = new Date();
+
+        // Calculate the difference in milliseconds
+        const differenceInMs = currentDate.getTime() - givenDate.getTime();
+
+        // Convert milliseconds to minutes (1 minute = 60 * 1000 milliseconds)
+        const differenceInMinutes = differenceInMs / (1000 * 60);
+
+        if (differenceInMinutes > number) {
+            return false;
+        } 
+        return true;
+    }
+
 }

@@ -20,8 +20,8 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
         next();
 
     } catch (error) {
-        console.log('error',error?.message);
-        return res.status(404).json({
+        console.log('error in',error);
+        return res.status(401).json({
             message: error?.message || 'Auth failed',
         });
     }

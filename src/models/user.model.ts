@@ -8,6 +8,7 @@ export interface usersI {
   password?: string;
   roleId: number;
   roleSlug: string;
+  isActive: boolean;
   updatedBy: number;
   createdBy: number;
   createdAt: Date;
@@ -42,11 +43,14 @@ export class users extends Model<usersI> {
 
   @AllowNull(false)
   @Column
-  roleId: number;
+  public roleId: number;
   
   @AllowNull(false)
   @Column
-  roleSlug: string;
+  public roleSlug: string;
+
+  @Column
+  public isActive: boolean;
 
   @Column
   public updatedAt: Date;

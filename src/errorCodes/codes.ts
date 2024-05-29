@@ -22,8 +22,12 @@ export const responses = {
         message: 'Wrong Password!',
         status: statuses.INVALID
     },
-    EMAIL_EXISTS: {
-        message: 'User already exists with this email!',
+    OLD_AND_NEW_PASSWORD_SAME: {
+        message: 'The old password and the new password are the same.',
+        status: statuses.INVALID
+    },
+    USER_EXISTS: {
+        message: 'User already exists',
         status: statuses.INVALID
     },
     UNAUTHORIZED: {
@@ -35,7 +39,11 @@ export const responses = {
         status: statuses.UNAUTHORIZED
     },
     TOKEN_BLACKLISTED: {
-        message: 'The token has been blacklisted',
+        message: 'The token has been blacklisted, Please login again!',
+        status: statuses.UNAUTHORIZED
+    },
+    UNAUTHORIZED_TOKEN: {
+        message: 'Unauthorized! Token is not verified!',
         status: statuses.UNAUTHORIZED
     },
     INVALID_ROLE: {
@@ -44,6 +52,18 @@ export const responses = {
     },
     UNKOWN_USER: {
         message: 'User not found!',
+        status: statuses.INVALID
+    },
+    OTP_EXPIRED: {
+        message: 'OTP is expired!',
+        status: statuses.INVALID
+    },
+    INVALID_OTP: {
+        message: 'Provided OTP is invalid!',
+        status: statuses.INVALID
+    },
+    INVALID_LINK: {
+        message: 'Invalid link.',
         status: statuses.INVALID
     },
 };
